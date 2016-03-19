@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="add_string">Add</string>
+    <string name="dateIsNull">No due date</string>
+    <string name="dueDate">dueDate</string>
+    <string name="title">title</string>
+    <string name="dateFormat">yyyy/MM/dd</string>
+    <string name="dateErrorNotice">Pleace enter a vaild date</string>
+    <string name="onDelete">Delete Item</string>
+    <string name="onCall">Call</string>
 </resources>

@@ -12,12 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MyAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<String> mTodos;
+    private ArrayList<Task> mTodos;
 
-    public MyAdapter(Context context, ArrayList<String> tasks) {
+    public MyAdapter(Context context, ArrayList<Task> tasks) {
         mContext = context;
         mTodos = tasks;
     }
@@ -42,12 +44,31 @@ public class MyAdapter extends BaseAdapter {
         LayoutInflater inflater =
                 LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.task,parent,false);
-        TextView item = (TextView) convertView.findViewById(R.id.taskItem);
-        item.setText(mTodos.get(position));
-        if(position % 2 == 0) {
-            item.setTextColor(Color.RED);
-        } else {
-            item.setTextColor(Color.BLUE);
+        TextView title = (TextView) convertView.findViewById(R.id.txtTodoTitle);
+        title.setText((mTodos.get(position)).title);
+        TextView date = (TextView) convertView.findViewById(R.id.txtTodoDueDate);
+        if((mTodos.get(position)).date == null) {
+            date.setText(R.string.dateIsNull);
+        }
+        else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime((mTodos.get(position)).date);
+            int taskYear = cal.get(Calendar.YEAR);
+            int taskMonth = cal.get(Calendar.MONTH);
+            int taskDay = cal.get(Calendar.DAY_OF_MONTH);
+            Date toDay = new Date();
+            cal.setTime(toDay);
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            date.setText(taskDay + "/" + (taskMonth+1) + "/" + taskYear);
+            if (taskYear == year&& taskMonth == month && taskDay == day) {
+                title.setTextColor(Color.RED);
+                date.setTextColor(Color.RED);
+            } else {
+                title.setTextColor(Color.BLUE);
+                date.setTextColor(Color.BLUE);
+            }
         }
         return convertView;
     }

@@ -3,6 +3,8 @@ package todolist.huji.ac.il.todolist;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,12 +15,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TodoListManagerActivity extends AppCompatActivity {
 
-    private ArrayList<String> mTodoList = new ArrayList<>();
+    private ArrayList<Task> mTodoList = new ArrayList<>();
     private MyAdapter mAdapter;
     private ListView mTodoListView;
 
@@ -34,20 +39,31 @@ public class TodoListManagerActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> arg0, View view,
                                            final int pos, long id) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
-                dialogBuilder.setTitle(mTodoList.get(pos));
-                dialogBuilder.setPositiveButton("Delete Item", new DialogInterface.OnClickListener() {
+                dialogBuilder.setTitle(mTodoList.get(pos).title);
+                dialogBuilder.setNegativeButton(R.string.onDelete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mTodoList.remove(pos);
                         mAdapter.notifyDataSetChanged();
                     }
                 });
+                if (mTodoList.get(pos).title.startsWith(getString(R.string.onCall))) {
+                    dialogBuilder.setPositiveButton(mTodoList.get(pos).title, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent dial = new Intent(Intent.ACTION_DIAL,
+                                    Uri.parse("tel:" + mTodoList.get(pos).title));
+                            startActivity(dial);
+                        }
+                    });
+                }
                 AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
                 return true;
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -56,11 +72,21 @@ public class TodoListManagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        EditText newTask = (EditText) findViewById(R.id.edtNewItem);
-        String task = newTask.getText().toString();
-        newTask.setText("");
-        mTodoList.add(task);
-        mAdapter.notifyDataSetChanged();
+        Intent Add = new Intent(this, AddNewTodoItemActivity.class);
+        startActivityForResult(Add, 0);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String title = data.getStringExtra(getString(R.string.title));
+        Date utilDate = (Date)data.getSerializableExtra(getString(R.string.dueDate));
+        if(utilDate != null && title != null && !title.isEmpty()){
+            Task newTask = new Task(title,utilDate);
+            mTodoList.add(newTask);
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 }
