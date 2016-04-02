@@ -55,13 +55,14 @@ public class MyAdapter extends BaseAdapter {
             cal.setTime((mTodos.get(position)).date);
             int taskYear = cal.get(Calendar.YEAR);
             int taskMonth = cal.get(Calendar.MONTH);
+            taskMonth++;
             int taskDay = cal.get(Calendar.DAY_OF_MONTH);
             Date toDay = new Date();
             cal.setTime(toDay);
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            date.setText(taskDay + "/" + (taskMonth+1) + "/" + taskYear);
+            date.setText(mTodos.get(position).dateToString());
             if (taskYear == year&& taskMonth == month && taskDay == day) {
                 title.setTextColor(Color.RED);
                 date.setTextColor(Color.RED);

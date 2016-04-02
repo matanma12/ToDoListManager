@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.firebase.client.Firebase;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,11 +28,19 @@ public class TodoListManagerActivity extends AppCompatActivity {
     private ArrayList<Task> mTodoList = new ArrayList<>();
     private MyAdapter mAdapter;
     private ListView mTodoListView;
+    private Firebase myFirebaseRef;
+    private DBHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
+        Firebase.setAndroidContext(this);
+        myFirebaseRef = new Firebase("https://todolistm.firebaseio.com/");
+        myFirebaseRef.child("message1").setValue("MatanMaman");
+        db = new DBHandler(getApplicationContext());
+
+        mTodoList = db.getAllTodos();
         mTodoListView = (ListView) findViewById(R.id.lstTodoItems);
         mAdapter = new MyAdapter(this, mTodoList);
         mTodoListView.setAdapter(mAdapter);
@@ -43,6 +53,7 @@ public class TodoListManagerActivity extends AppCompatActivity {
                 dialogBuilder.setNegativeButton(R.string.onDelete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        db.deleteTodo(mTodoList.get(pos));
                         mTodoList.remove(pos);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -84,6 +95,7 @@ public class TodoListManagerActivity extends AppCompatActivity {
         Date utilDate = (Date)data.getSerializableExtra(getString(R.string.dueDate));
         if(utilDate != null && title != null && !title.isEmpty()){
             Task newTask = new Task(title,utilDate);
+            db.insertTodo(newTask);
             mTodoList.add(newTask);
             mAdapter.notifyDataSetChanged();
         }
