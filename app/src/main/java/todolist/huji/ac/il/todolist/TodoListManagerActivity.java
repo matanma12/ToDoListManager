@@ -1,7 +1,6 @@
 package todolist.huji.ac.il.todolist;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,17 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.firebase.client.Firebase;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class TodoListManagerActivity extends AppCompatActivity {
 
@@ -40,7 +34,7 @@ public class TodoListManagerActivity extends AppCompatActivity {
         myFirebaseRef.child("message1").setValue("MatanMaman");
         db = new DBHandler(getApplicationContext());
 
-        mTodoList = db.getAllTodos();
+        mTodoList = db.getAllTasks();
         mTodoListView = (ListView) findViewById(R.id.lstTodoItems);
         mAdapter = new MyAdapter(this, mTodoList);
         mTodoListView.setAdapter(mAdapter);
@@ -53,7 +47,7 @@ public class TodoListManagerActivity extends AppCompatActivity {
                 dialogBuilder.setNegativeButton(R.string.onDelete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.deleteTodo(mTodoList.get(pos));
+                        db.deleteTask(mTodoList.get(pos));
                         mTodoList.remove(pos);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -95,7 +89,7 @@ public class TodoListManagerActivity extends AppCompatActivity {
         Date utilDate = (Date)data.getSerializableExtra(getString(R.string.dueDate));
         if(utilDate != null && title != null && !title.isEmpty()){
             Task newTask = new Task(title,utilDate);
-            db.insertTodo(newTask);
+            db.insertTask(newTask);
             mTodoList.add(newTask);
             mAdapter.notifyDataSetChanged();
         }

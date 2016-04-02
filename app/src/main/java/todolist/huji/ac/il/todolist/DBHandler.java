@@ -43,45 +43,43 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public void insertTodo(Task todo)
+    public void insertTask(Task task)
     {
-        ContentValues newTodo = new ContentValues();
-        newTodo.put(KEY_TODO_STR,todo.title);
-        newTodo.put(KEY_DATE,todo.dateToString());
-        Long ret = db.insertOrThrow(MAIN_TABLE_NAME, null, newTodo);
-        Log.i("todo","insertTodo returned with: " + ret);
+        ContentValues newTask = new ContentValues();
+        newTask.put(KEY_TODO_STR, task.title);
+        newTask.put(KEY_DATE, task.dateToString());
+        Long ret = db.insertOrThrow(MAIN_TABLE_NAME, null, newTask);
+        Log.i("todo","insertTask returned with: " + ret);
     }
 
-    public void deleteTodo(Task todo) {
-/*        String sqlComandDeleteTodo = "DELETE FROM " + MAIN_TABLE_NAME + " WHERE " + KEY_TODO_STR + "=" + todo.getTodo();
-        db.execSQL(sqlComandDeleteTodo);*/
-        int ret = db.delete(MAIN_TABLE_NAME, KEY_TODO_STR + " = '" + todo.title+"'", null);
-        Log.i("todo","deleteTodo returned with: " + ret);
+    public void deleteTask(Task task) {
+        int ret = db.delete(MAIN_TABLE_NAME, KEY_TODO_STR + " = '" + task.title+"'", null);
+        Log.i("todo","deleteTask returned with: " + ret);
 
     }
 
-    public ArrayList<Task> getAllTodos() {
-        ArrayList<Task> allTodos = new ArrayList<>();
+    public ArrayList<Task> getAllTasks() {
+        ArrayList<Task> allTasks = new ArrayList<>();
 
-        String selectAllTodos = "SELECT * FROM " + MAIN_TABLE_NAME;
-        Cursor crs = db.rawQuery(selectAllTodos, null);
+        String selectAllTasks = "SELECT * FROM " + MAIN_TABLE_NAME;
+        Cursor crs = db.rawQuery(selectAllTasks, null);
         if(crs.getCount() == 0)
         {
-            Log.i("todo", "getAllTodos: No stories in db.");
+            Log.i("todo", "getAllTasks: No stories in db.");
             crs.close();
-            return allTodos;
+            return allTasks;
         }
         crs.moveToFirst();
         for(int i = 0; i <  crs.getCount(); i++) {
-            String todoStr = crs.getString(0);
-            String datestr = crs.getString(1);
-            Date date = parseDate(datestr);
-            Task newTodo = new Task(todoStr, date);
-            allTodos.add(newTodo);
+            String title = crs.getString(0);
+            String dateStr = crs.getString(1);
+            Date date = parseDate(dateStr);
+            Task newTask = new Task(title, date);
+            allTasks.add(newTask);
             crs.moveToNext();
         }
         crs.close();
-        return allTodos;
+        return allTasks;
     }
 
     private Date parseDate(String datestr) {
