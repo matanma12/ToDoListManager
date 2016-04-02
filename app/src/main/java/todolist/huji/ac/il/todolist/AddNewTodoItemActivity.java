@@ -34,7 +34,7 @@ public class AddNewTodoItemActivity extends Activity {
         int year = picker.getYear();
         int month = picker.getMonth();
         int day = picker.getDayOfMonth();
-        month++;//ajust to reality
+        month+=2;//adjust to reality
         String date = year + "/" + month + "/" + day;
         java.util.Date utilDate = null;
 

@@ -21,9 +21,9 @@ public class Task {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        int mon = cal.get(Calendar.MONTH);
+        int month = cal.get(Calendar.MONTH);
         int year = cal.get(Calendar.YEAR);
-        return "" + mon + "/" + day + "/" + year;
+        return "" + day + "/" + month + "/" + year;
     }
 
 
